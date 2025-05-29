@@ -27,56 +27,34 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Kiểm tra token trong localStorage khi khởi động
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-
     if (token && storedUser) {
       setUser(JSON.parse(storedUser));
-      // Cấu hình axios để tự động gửi token trong header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
-    
-    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { token, user: userData } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      // Cấu hình axios để tự động gửi token trong header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      setUser(userData);
-      return userData;
-    } catch (error) {
-      throw error.response?.data?.message || 'Đăng nhập thất bại';
-    }
+    const res = await axios.post('/api/auth/login', { email, password });
+    const { token, user: userData } = res.data;
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    setUser(userData);
+    return userData;
   };
 
   const register = async (userData) => {
-    try {
-      const response = await axios.post('/api/auth/register', userData);
-      const { token, user: newUser } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      
-      // Cấu hình axios để tự động gửi token trong header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      setUser(newUser);
-      return newUser;
-    } catch (error) {
-      throw error.response?.data?.message || 'Đăng ký thất bại';
-    }
+    const res = await axios.post('/api/auth/register', userData);
+    const { token, user: newUser } = res.data;
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(newUser));
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    setUser(newUser);
+    return newUser;
   };
 
   const logout = () => {
@@ -87,31 +65,38 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = async (userData) => {
-    try {
-      const response = await axios.put('/api/auth/profile', userData);
-      const updatedUser = response.data;
-      
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      
-      return updatedUser;
-    } catch (error) {
-      throw error.response?.data?.message || 'Cập nhật thông tin thất bại';
-    }
+    const response = await axios.put('/api/auth/profile', userData);
+    const updatedUser = response.data;
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    return updatedUser;
+  };
+
+  const updateAvatar = async (file) => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await axios.patch('/api/auth/profile/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    // Cập nhật avatar trong user local
+    const updatedUser = { ...user, avatar: response.data.avatar };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    return updatedUser;
   };
 
   const value = {
     user,
-    loading,
     login,
     register,
     logout,
-    updateProfile
+    updateProfile,
+    updateAvatar
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 } 

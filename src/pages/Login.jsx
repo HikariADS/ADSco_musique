@@ -14,12 +14,8 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError(''); // Clear error when user types
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -35,7 +31,7 @@ const Login = () => {
       navigate(redirectTo);
     } catch (err) {
       console.error('Login error:', err);
-      setError(typeof err === 'string' ? err : 'Đăng nhập không thành công. Vui lòng thử lại.');
+      setError(err.response?.data?.message || 'Đăng nhập thất bại');
     } finally {
       setLoading(false);
     }

@@ -16,10 +16,11 @@
 .footer ul li a {
   text-decoration: none;
   transition: color 0.2s;
+  color: #222 !important;
 }
 
 .footer ul li a:hover {
-  color: #fff !important;
+  color: #007bff !important;
 }
 
 .footer .input-group {
@@ -48,15 +49,22 @@
 .social-links a {
   font-size: 1.5rem;
   transition: opacity 0.2s;
+  color: #222 !important;
 }
 
 .social-links a:hover {
   opacity: 0.8;
+  color: #007bff !important;
 }
 
 .payment-methods i {
   font-size: 1.5rem;
   opacity: 0.7;
+  color: #222 !important;
+}
+
+.footer .text-white-50 {
+  color: #222 !important;
 }
 
 /* Responsive adjustments */

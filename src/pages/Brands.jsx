@@ -68,55 +68,57 @@ const brands = [
 
 const Brands = () => {
   return (
-    <div className="container py-5">
-      <div className="text-center mb-5">
-        <h1 className="display-4 fw-bold">Thương Hiệu Nổi Tiếng</h1>
-        <p className="text-muted fs-5">Khám phá các thương hiệu nhạc cụ hàng đầu thế giới</p>
-      </div>
+    <div style={{ minHeight: '100vh', minHeight: '100dvh', background: 'linear-gradient(to bottom, #eaf2fb 0%, #4596e6 100%)', paddingBottom: 120 }}>
+      <div className="container py-5">
+        <div className="text-center mb-5">
+          <h1 className="display-4 fw-bold">Thương Hiệu Nổi Tiếng</h1>
+          <p className="text-muted fs-5">Khám phá các thương hiệu nhạc cụ hàng đầu thế giới</p>
+        </div>
 
-      <div className="row g-4">
-        {brands.map((brand) => (
-          <div key={brand.id} className="col-12 col-md-6 col-lg-4">
-            <div className="card h-100 brand-card shadow-sm">
-              <div className="card-body text-center">
-                <div className="p-4" style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <img
-                    src={brand.logo}
-                    alt={`${brand.name} logo`}
-                    style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
-                  />
+        <div className="row g-4">
+          {brands.map((brand) => (
+            <div key={brand.id} className="col-12 col-md-6 col-lg-4">
+              <div className="card h-100 brand-card shadow-sm">
+                <div className="card-body text-center">
+                  <div className="p-4" style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img
+                      src={brand.logo}
+                      alt={`${brand.name} logo`}
+                      style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
+                    />
+                  </div>
+                  <h3 className="card-title mt-3">{brand.name}</h3>
+                  <p className="text-muted mb-2">
+                    <small>Thành lập: {brand.founded} | {brand.origin}</small>
+                  </p>
+                  <p className="card-text">{brand.description}</p>
+                  <div className="mb-3">
+                    {brand.categories.map((category, index) => (
+                      <span key={index} className="badge bg-light text-dark me-2 mb-2">
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                  <Link to={`/category/${brand.name.toLowerCase()}`} className="btn btn-outline-dark">
+                    Xem Sản Phẩm
+                  </Link>
                 </div>
-                <h3 className="card-title mt-3">{brand.name}</h3>
-                <p className="text-muted mb-2">
-                  <small>Thành lập: {brand.founded} | {brand.origin}</small>
-                </p>
-                <p className="card-text">{brand.description}</p>
-                <div className="mb-3">
-                  {brand.categories.map((category, index) => (
-                    <span key={index} className="badge bg-light text-dark me-2 mb-2">
-                      {category}
-                    </span>
-                  ))}
-                </div>
-                <Link to={`/category/${brand.name.toLowerCase()}`} className="btn btn-outline-dark">
-                  Xem Sản Phẩm
-                </Link>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <style>
-        {`
-          .brand-card {
-            transition: transform 0.2s;
-          }
-          .brand-card:hover {
-            transform: translateY(-5px);
-          }
-        `}
-      </style>
+        <style>
+          {`
+            .brand-card {
+              transition: transform 0.2s;
+            }
+            .brand-card:hover {
+              transform: translateY(-5px);
+            }
+          `}
+        </style>
+      </div>
     </div>
   );
 };

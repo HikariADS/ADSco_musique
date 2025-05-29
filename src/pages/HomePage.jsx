@@ -20,7 +20,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import BlogBlock from '../components/BlogBlock';
 import SpecialsBlock from '../components/SpecialsBlock';
-import Footer from '../components/Footer';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -147,7 +146,7 @@ function HomePage() {
   };
 
   return (
-    <div className="home-page">
+    <div>
       {/* 1. Hero Section - Slider */}
       <section className="hero-section">
         <div className="container">
@@ -238,29 +237,7 @@ function HomePage() {
       {/* 5. Blog & Tin Tức */}
       <BlogBlock />
 
-      {/* 6. Promotional Banner */}
-      <section className="promo-banner py-5">
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-md-6">
-              <h2 className="mb-4">Khuyến Mãi Đặc Biệt</h2>
-              <p className="lead mb-4">Giảm giá lên đến 30% cho các sản phẩm được chọn. Áp dụng cho đến hết tháng.</p>
-              <button 
-                className="btn btn-outline-light btn-lg"
-                onClick={() => navigate('/deals')}
-                style={{ position: 'relative', zIndex: 10 }}
-              >
-                Xem Ngay
-              </button>
-            </div>
-            <div className="col-md-6">
-              <img src={placeholder} alt="Special Promotion" className="img-fluid rounded" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Newsletter Section */}
+      {/* 6. Newsletter Section */}
       <section className="newsletter-section py-5">
         <div className="container text-center">
           <h2 className="mb-4">Đăng Ký Nhận Tin</h2>
@@ -273,8 +250,6 @@ function HomePage() {
           </form>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

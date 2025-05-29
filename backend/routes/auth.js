@@ -4,108 +4,77 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const multer = require('multer');
+const path = require('path');
+
+// Multer config
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../../public/avatars'));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, 'user-' + req.user._id + '-' + Date.now() + ext);
+  }
+});
+const upload = multer({ storage });
 
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    // Validate input
+    const { name, dob, hometown, address, phone, email, password } = req.body;
     if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Vui lòng điền đầy đủ thông tin' });
+      return res.status(400).json({ message: 'Vui lòng nhập đầy đủ thông tin' });
     }
-
-    // Kiểm tra email đã tồn tại chưa
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ message: 'Email đã được sử dụng' });
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Mật khẩu phải có ít nhất 6 ký tự' });
     }
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Tạo user mới
-    user = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role: 'user'
-    });
-
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email đã tồn tại' });
+    }
+    const user = new User({ name, dob, hometown, address, phone, email, password });
     await user.save();
 
-    // Tạo JWT token
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
-    );
-
-    // Trả về thông tin user (không bao gồm password) và token
-    const userResponse = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role
-    };
-
+    // Tạo token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '24h' });
     res.status(201).json({
       message: 'Đăng ký thành công',
       token,
-      user: userResponse
+      user: { _id: user._id, name: user.name, dob: user.dob, hometown: user.hometown, address: user.address, phone: user.phone, email: user.email, role: user.role }
     });
-  } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ message: 'Lỗi server, vui lòng thử lại sau' });
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
   }
+});
+
+router.all('/register', (req, res) => {
+  res.status(405).json({ message: 'Chỉ hỗ trợ phương thức POST' });
 });
 
 // Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validate input
     if (!email || !password) {
       return res.status(400).json({ message: 'Vui lòng nhập email và mật khẩu' });
     }
-
-    // Tìm user theo email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
     }
-
-    // So sánh mật khẩu
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
     }
-
-    // Tạo JWT token
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
-    );
-
-    // Trả về thông tin user (không bao gồm password) và token
-    const userResponse = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role
-    };
-
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '24h' });
     res.json({
       message: 'Đăng nhập thành công',
       token,
-      user: userResponse
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role }
     });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Lỗi server, vui lòng thử lại sau' });
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
   }
 });
 
@@ -151,6 +120,20 @@ router.put('/profile', auth, async (req, res) => {
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi cập nhật thông tin', error: error.message });
+  }
+});
+
+// Upload avatar
+router.patch('/profile/avatar', auth, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'Không có file ảnh' });
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'Không tìm thấy user' });
+    user.avatar = '/avatars/' + req.file.filename;
+    await user.save();
+    res.json({ message: 'Cập nhật ảnh đại diện thành công', avatar: user.avatar });
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
   }
 });
 

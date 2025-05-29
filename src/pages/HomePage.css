@@ -294,13 +294,9 @@
 
 .hero-section,
 .categories-section,
-.featured-products,
+.featured-products-block,
 .promo-banner,
 .newsletter-section {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-top: 40px;
-  padding-bottom: 40px;
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
@@ -316,7 +312,4 @@ hr, .row.mt-5.pt-4.border-top.border-secondary {
   box-shadow: none !important;
 }
 
-.home-page {
-  min-height: 100vh;
-  background: linear-gradient(to bottom, #fff, #b2d8ff 60%, #1976d2 100%);
-} 
+/* ĐÃ XÓA HOÀN TOÀN .home-page và mọi background riêng */ 
