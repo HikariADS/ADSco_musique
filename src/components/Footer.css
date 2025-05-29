@@ -1,0 +1,80 @@
+.footer {
+  margin-top: 4rem;
+  background: transparent !important;
+  color: #222 !important;
+}
+
+.footer h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.footer ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer ul li a {
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer ul li a:hover {
+  color: #fff !important;
+}
+
+.footer .input-group {
+  max-width: 300px;
+}
+
+.footer .input-group .form-control {
+  border: none;
+  padding: 0.75rem 1rem;
+}
+
+.footer .input-group .btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  border: none;
+}
+
+.footer .input-group .btn:hover {
+  background-color: #0056b3;
+}
+
+.social-links {
+  margin-top: 1.5rem;
+}
+
+.social-links a {
+  font-size: 1.5rem;
+  transition: opacity 0.2s;
+}
+
+.social-links a:hover {
+  opacity: 0.8;
+}
+
+.payment-methods i {
+  font-size: 1.5rem;
+  opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .footer {
+    text-align: center;
+  }
+
+  .footer .input-group {
+    margin: 0 auto;
+  }
+
+  .footer .social-links {
+    justify-content: center;
+  }
+
+  .footer .text-md-end {
+    text-align: center !important;
+    margin-top: 1rem;
+  }
+} 

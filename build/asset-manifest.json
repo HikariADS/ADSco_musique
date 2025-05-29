@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ef4f1eb7.css",
+    "main.js": "/static/js/main.f0fd0265.js",
+    "static/media/logo.png": "/static/media/logo.e0fbd8260eb470d8770b.png",
+    "static/media/deal.webp": "/static/media/deal.6f545eda4118b0c06a24.webp",
+    "static/media/piano1.webp": "/static/media/piano1.2f1ce822931c97c4d468.webp",
+    "static/media/drum1.webp": "/static/media/drum1.7bc87e499e3a1fe6dcc6.webp",
+    "static/media/guitar1.webp": "/static/media/guitar1.3b3ccdcdcd5f5a2a8134.webp",
+    "static/media/toy1.webp": "/static/media/toy1.de67e9e54f246f062d35.webp",
+    "static/media/slick.svg": "/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/static/media/slick.295183786cd8a1389865.woff",
+    "index.html": "/index.html",
+    "main.ef4f1eb7.css.map": "/static/css/main.ef4f1eb7.css.map",
+    "main.f0fd0265.js.map": "/static/js/main.f0fd0265.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ef4f1eb7.css",
+    "static/js/main.f0fd0265.js"
+  ]
+}

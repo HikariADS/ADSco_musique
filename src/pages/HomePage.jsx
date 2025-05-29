@@ -1,0 +1,282 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Slider from 'react-slick';
+import guitar1 from '../assets/guitar1.webp';
+import guitar2 from '../assets/guitar2.webp';
+import piano2 from '../assets/piano2.webp';
+import drum2 from '../assets/drum2.webp';
+import toy2 from '../assets/toy2.webp';
+import deal from '../assets/deal.webp';
+import placeholder from '../assets/toy1.webp';
+import guitar4 from '../assets/guitar4.webp';
+import piano1 from '../assets/piano1.webp';
+import piano3 from '../assets/piano3.webp';
+import piano4 from '../assets/piano4.webp';
+import piano5 from '../assets/piano5.webp';
+import drum1 from '../assets/drum1.webp';
+import toy1 from '../assets/toy1.webp';
+import './HomePage.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import BlogBlock from '../components/BlogBlock';
+import SpecialsBlock from '../components/SpecialsBlock';
+import Footer from '../components/Footer';
+
+function HomePage() {
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const heroBanners = [
+    {
+      image: deal,
+      alt: 'Fender Standard Series',
+      link: '/products',
+    },
+    {
+      image: guitar1,
+      alt: 'Guitar Demo',
+      link: '/products',
+    },
+    {
+      image: placeholder,
+      alt: 'Placeholder',
+      link: '/products',
+    },
+  ];
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    autoplay: true,
+    autoplaySpeed: 4000,
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/products');
+      if (!response.ok) {
+        throw new Error('Lỗi khi tải danh sách sản phẩm');
+      }
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error:', error);
+      // Fallback data when API is not available
+      setProducts([
+        {
+          id: 1,
+          name: 'Fender Player Stratocaster',
+          price: 15990000,
+          imageUrl: guitar1
+        },
+        {
+          id: 2,
+          name: 'Yamaha P-125 Digital Piano',
+          price: 19990000,
+          imageUrl: piano1
+        },
+        {
+          id: 3,
+          name: 'Roland TD-17KVX V-Drums',
+          price: 45990000,
+          imageUrl: drum1
+        },
+        {
+          id: 4,
+          name: 'Shure SM7B Microphone',
+          price: 8990000,
+          imageUrl: toy1
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const pianoImages = [piano1, piano2, piano3, piano4, piano5];
+  const randomPianoImage = useMemo(() => {
+    return pianoImages[Math.floor(Math.random() * pianoImages.length)];
+  }, []);
+
+  const categories = [
+    {
+      id: 1,
+      name: 'Guitar & Bass',
+      image: guitar4,
+      count: 150,
+      slug: 'guitar'
+    },
+    {
+      id: 2,
+      name: 'Keyboard & Piano',
+      image: randomPianoImage,
+      count: 80,
+      slug: 'piano'
+    },
+    {
+      id: 3,
+      name: 'Drums',
+      image: drum1,
+      count: 60,
+      slug: 'drum'
+    },
+    {
+      id: 4,
+      name: 'Toys',
+      image: toy1,
+      count: 40,
+      slug: 'toys'
+    }
+  ];
+
+  const handleCategoryClick = (slug) => {
+    navigate(`/category/${slug}`);
+  };
+
+  const handleProductClick = (productId) => {
+    navigate(`/products/${productId}`);
+  };
+
+  return (
+    <div className="home-page">
+      {/* 1. Hero Section - Slider */}
+      <section className="hero-section">
+        <div className="container">
+          <div className="row align-items-center justify-content-center">
+            <div className="col-md-6 mb-4 mb-md-0">
+              <h1 className="display-4 mb-4">Khám Phá Thế Giới Âm Nhạc</h1>
+              <p className="lead mb-4">Tìm kiếm nhạc cụ và thiết bị âm thanh chất lượng cao từ các thương hiệu hàng đầu thế giới.</p>
+              <button className="btn btn-primary btn-lg" onClick={() => navigate('/products')}>Mua Sắm Ngay</button>
+            </div>
+            <div className="col-md-6">
+              <Slider {...sliderSettings} className="hero-slider">
+                {heroBanners.map((banner) => (
+                  <div key={banner.alt} className="hero-slider-item">
+                    <Link to={banner.link}>
+                      <img src={banner.image} alt={banner.alt} className="hero-slider-img" />
+                    </Link>
+                  </div>
+                ))}
+              </Slider>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Featured Categories */}
+      <section className="categories-section py-5">
+        <div className="container">
+          <h2 className="section-title text-center mb-5">Danh Mục Nổi Bật</h2>
+          <div className="row gx-4 gy-4">
+            {categories.map(category => (
+              <div key={category.id} className="col-12 col-sm-6 col-md-3 d-flex">
+                <div
+                  className="category-card w-100"
+                  onClick={() => handleCategoryClick(category.slug)}
+                  style={{ cursor: 'pointer', position: 'relative', zIndex: 10 }}
+                >
+                  <div className="category-image">
+                    <img src={category.image} alt={category.name} className="img-fluid" />
+                  </div>
+                  <div className="category-info">
+                    <h3>{category.name}</h3>
+                    <p>{category.count} sản phẩm</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Featured Products */}
+      <section className="featured-products-block py-5">
+        <div className="container">
+          <h2 className="section-title text-center mb-5">Sản Phẩm Nổi Bật</h2>
+          <div className="row gx-4 gy-4">
+            {!loading && products.map(product => (
+              <div key={product.id} className="col-12 col-sm-6 col-md-3">
+                <div 
+                  className="product-card w-100"
+                  onClick={() => handleProductClick(product.id)}
+                  style={{ cursor: 'pointer', position: 'relative', zIndex: 10 }}
+                >
+                  <div className="product-image">
+                    <img 
+                      src={product.imageUrl || placeholder} 
+                      alt={product.name} 
+                      className="img-fluid"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = placeholder;
+                      }}
+                    />
+                  </div>
+                  <div className="product-info">
+                    <h3>{product.name}</h3>
+                    <p className="price">{product.price?.toLocaleString('vi-VN')}đ</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Specials/Hot Deals */}
+      <SpecialsBlock />
+
+      {/* 5. Blog & Tin Tức */}
+      <BlogBlock />
+
+      {/* 6. Promotional Banner */}
+      <section className="promo-banner py-5">
+        <div className="container">
+          <div className="row align-items-center">
+            <div className="col-md-6">
+              <h2 className="mb-4">Khuyến Mãi Đặc Biệt</h2>
+              <p className="lead mb-4">Giảm giá lên đến 30% cho các sản phẩm được chọn. Áp dụng cho đến hết tháng.</p>
+              <button 
+                className="btn btn-outline-light btn-lg"
+                onClick={() => navigate('/deals')}
+                style={{ position: 'relative', zIndex: 10 }}
+              >
+                Xem Ngay
+              </button>
+            </div>
+            <div className="col-md-6">
+              <img src={placeholder} alt="Special Promotion" className="img-fluid rounded" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Newsletter Section */}
+      <section className="newsletter-section py-5">
+        <div className="container text-center">
+          <h2 className="mb-4">Đăng Ký Nhận Tin</h2>
+          <p className="lead mb-4">Nhận thông tin về sản phẩm mới và khuyến mãi đặc biệt</p>
+          <form className="newsletter-form" style={{ position: 'relative', zIndex: 10 }}>
+            <div className="input-group mx-auto" style={{ maxWidth: '500px' }}>
+              <input type="email" className="form-control" placeholder="Email của bạn" />
+              <button className="btn btn-primary" type="submit">Đăng Ký</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}
+
+export default HomePage; 
