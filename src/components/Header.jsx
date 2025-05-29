@@ -7,6 +7,7 @@ const Header = ({ cartItemCount }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [pendingOrders, setPendingOrders] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -31,13 +32,34 @@ const Header = ({ cartItemCount }) => {
     navigate('/login');
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchTerm('');
+    }
+  };
+
   return (
-    <header>
-      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <header className="site-header">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container">
           <Link className="navbar-brand" to="/">
-            <img src="/assets/logo.png" alt="ADSco" height="40" />
+            <img src="/logo.png" alt="Logo" height="50" />
           </Link>
+
+          <form className="d-flex" onSubmit={handleSearch}>
+            <input
+              type="search"
+              className="form-control me-2"
+              placeholder="Tìm kiếm sản phẩm..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button type="submit" className="btn btn-outline-dark">
+              <i className="bi bi-search"></i>
+            </button>
+          </form>
 
           <button
             className="navbar-toggler"

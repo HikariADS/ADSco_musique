@@ -1,0 +1,129 @@
+.navbar {
+  background-color: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.logo img {
+  height: 40px;
+  object-fit: contain;
+}
+
+.nav-items {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #007bff;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-icon {
+  color: #333;
+  font-size: 1.2rem;
+  transition: color 0.2s;
+}
+
+.nav-icon:hover {
+  color: #007bff;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.username {
+  font-weight: 500;
+}
+
+.admin-link {
+  color: #333;
+  font-size: 1.2rem;
+  transition: color 0.2s;
+}
+
+.admin-link:hover {
+  color: #007bff;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.logout-btn:hover {
+  color: #dc3545;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.login-btn:hover {
+  color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+
+  .nav-items {
+    gap: 1rem;
+  }
+
+  .username {
+    display: none;
+  }
+} 

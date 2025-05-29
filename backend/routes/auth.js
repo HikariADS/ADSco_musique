@@ -22,28 +22,50 @@ const upload = multer({ storage });
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { name, dob, hometown, address, phone, email, password } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Vui lòng nhập đầy đủ thông tin' });
+    const { name, email, password, phone, address } = req.body;
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: 'Email đã được sử dụng' });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Mật khẩu phải có ít nhất 6 ký tự' });
-    }
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email đã tồn tại' });
-    }
-    const user = new User({ name, dob, hometown, address, phone, email, password });
+
+    // Create new user
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      phone,
+      address,
+      isAdmin: false
+    });
+
     await user.save();
 
-    // Tạo token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '24h' });
+    // Create and return JWT token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
     res.status(201).json({
       message: 'Đăng ký thành công',
       token,
-      user: { _id: user._id, name: user.name, dob: user.dob, hometown: user.hometown, address: user.address, phone: user.phone, email: user.email, role: user.role }
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        isAdmin: user.isAdmin
+      }
     });
   } catch (err) {
+    console.error('Register error:', err);
     res.status(500).json({ message: 'Lỗi server', error: err.message });
   }
 });
@@ -59,21 +81,37 @@ router.post('/login', async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: 'Vui lòng nhập email và mật khẩu' });
     }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '24h' });
+
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
     res.json({
       message: 'Đăng nhập thành công',
       token,
-      user: { _id: user._id, name: user.name, email: user.email, role: user.role }
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        isAdmin: user.isAdmin
+      }
     });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Lỗi server', error: err.message });
   }
 });
@@ -110,16 +148,28 @@ router.get('/me', async (req, res) => {
 router.put('/profile', auth, async (req, res) => {
   try {
     const { name, phone, address } = req.body;
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
 
-    if (name) user.name = name;
-    if (phone) user.phone = phone;
-    if (address) user.address = address;
+    user.name = name || user.name;
+    user.phone = phone || user.phone;
+    user.address = address || user.address;
 
     await user.save();
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi khi cập nhật thông tin', error: error.message });
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      isAdmin: user.isAdmin
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
   }
 });
 
@@ -132,6 +182,19 @@ router.patch('/profile/avatar', auth, upload.single('avatar'), async (req, res) 
     user.avatar = '/avatars/' + req.file.filename;
     await user.save();
     res.json({ message: 'Cập nhật ảnh đại diện thành công', avatar: user.avatar });
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
+  }
+});
+
+// Verify token
+router.get('/verify', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
+    res.json(user);
   } catch (err) {
     res.status(500).json({ message: 'Lỗi server', error: err.message });
   }

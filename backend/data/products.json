@@ -2,7 +2,9 @@
   {
     "name": "Fender Player Stratocaster",
     "description": "Đàn guitar điện Fender Player Series, thân gỗ alder, cần maple",
-    "price": 25900000,
+    "originalPrice": 25900000,
+    "salePrice": 22900000,
+    "discount": 12,
     "category": "Guitar Điện",
     "brand": "Fender",
     "image": "/assets/products/guitar1.webp",
@@ -14,7 +16,9 @@
   {
     "name": "Gibson Les Paul Standard '60s",
     "description": "Đàn guitar điện Gibson Les Paul với thân gỗ mahogany, mặt top maple",
-    "price": 89900000,
+    "originalPrice": 89900000,
+    "salePrice": 79900000,
+    "discount": 11,
     "category": "Guitar Điện",
     "brand": "Gibson",
     "image": "/assets/guitar2.webp",

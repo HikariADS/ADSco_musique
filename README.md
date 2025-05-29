@@ -1,159 +1,140 @@
-# ADSco - Audio Equipment E-commerce Platform
+# ADSco Musique - Musical Instruments E-commerce Website
 
-## Overview
-ADSco is a full-stack e-commerce platform specializing in professional audio equipment. The application features a modern user interface, secure authentication, shopping cart functionality, and order management system.
+A modern musical instruments e-commerce website built with React and Node.js, providing the best online shopping experience for users.
 
 ## Features
-- User authentication (login/register)
-- Product browsing and searching
-- Shopping cart management
-- Order creation and tracking
-- Responsive design
-- Admin dashboard for order management
 
-## Tech Stack
+- 🎵 Product display by categories (Guitar, Piano, Drums, Toys)
+- 🔍 Search products by name, description, and brand
+- 🛒 Shopping cart and checkout
+- 👤 User account management
+- 💫 New products and promotions
+- ⭐ Product ratings and reviews
+- 📱 Responsive design
+
+## Technologies Used
+
 ### Frontend
-- React.js
-- React Router for navigation
-- Axios for API calls
-- Context API for state management
-- Bootstrap for styling
-- React-toastify for notifications
-- React-icons for UI icons
+- React 18
+- React Router v6
+- Bootstrap 5
+- Axios
+- React Toastify
+- React Slick (for slider)
 
 ### Backend
 - Node.js
-- Express.js
-- MongoDB for database
-- JWT for authentication
-- Mongoose ODM
-- Nodemon for development
-- Cors for cross-origin requests
+- Express
+- MongoDB
+- JWT Authentication
 
-## Getting Started
+## Installation
 
-### Prerequisites
+### Requirements
 - Node.js (v14 or higher)
-- MongoDB installed locally
-- npm or yarn package manager
-- MongoDB Compass (recommended for database management)
+- MongoDB
+- npm or yarn
 
-### Required Dependencies
+### Installation Steps
 
-#### Frontend Dependencies
+1. Clone repository
 ```bash
-npm install react-router-dom @mui/material @emotion/react @emotion/styled
-npm install axios react-toastify react-icons
-npm install bootstrap @popperjs/core
-npm install react-scripts --save
+git clone https://github.com/your-username/ADSco_musique.git
+cd ADSco_musique
 ```
 
-#### Backend Dependencies
-```bash
-npm install express mongoose dotenv cors jsonwebtoken bcryptjs
-npm install nodemon --save-dev
-```
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone [repository-url]
-cd ADSco-main
-```
-
-2. Install frontend dependencies:
-```bash
-npm install
-```
-
-3. Install backend dependencies:
+2. Install backend dependencies
 ```bash
 cd backend
 npm install
 ```
 
-4. Create a `.env` file in the backend directory with the following content:
+3. Install frontend dependencies
+```bash
+cd ../
+npm install
 ```
-MONGODB_URI=mongodb://127.0.0.1:27017/adsco
+
+4. Create .env file in backend directory
+```
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
 PORT=5000
-JWT_SECRET=your_jwt_secret_key
 ```
 
-### Running the Application
-
-1. Start MongoDB:
-   - Make sure MongoDB service is running
-   - Open MongoDB Compass and connect to: mongodb://127.0.0.1:27017
-   - Create a database named 'adsco'
-
-2. Start the backend server:
+5. Start backend server
 ```bash
 cd backend
-npm run dev
-```
-The server will run on http://localhost:5000
-
-3. Start the frontend application (in a new terminal):
-```bash
-cd ..
 npm start
 ```
-The application will run on http://localhost:3004
 
-### Troubleshooting
-- If you get script execution policy error in PowerShell:
-  1. Open PowerShell as Administrator
-  2. Run: `Set-ExecutionPolicy RemoteSigned`
-  3. Type 'Y' to accept the changes
+6. Start frontend (in a new terminal)
+```bash
+npm start
+```
 
-- If you get 'react-scripts' not found error:
-  ```bash
-  npm install react-scripts --save
-  ```
+## Main Dependencies
 
-- If MongoDB connection fails:
-  1. Check if MongoDB service is running
-  2. Verify the connection string in .env file
-  3. Make sure the database name is 'adsco' not 'adsco_music'
+### Frontend
+```json
+{
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.2",
+    "bootstrap": "^5.3.2",
+    "bootstrap-icons": "^1.11.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "react-scripts": "5.0.1",
+    "react-slick": "^0.29.0",
+    "react-toastify": "^9.1.3",
+    "slick-carousel": "^1.8.1",
+    "web-vitals": "^2.1.4"
+  }
+}
+```
+
+### Backend
+```json
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.2",
+    "nodemon": "^3.0.2"
+  }
+}
+```
 
 ## Project Structure
+
 ```
-ADSco-main/
-├── src/                    # Frontend source files
-│   ├── components/        # React components
-│   ├── contexts/         # Context providers
-│   ├── pages/           # Page components
-│   └── App.jsx          # Main application component
-├── backend/              # Backend source files
-│   ├── models/          # MongoDB models
-│   ├── routes/          # API routes
-│   ├── middleware/      # Custom middleware
-│   └── server.js        # Express server setup
-└── README.md            # Project documentation
+ADSco_musique/
+├── src/
+│   ├── assets/         # Images and resources
+│   ├── components/     # Reusable components
+│   ├── contexts/       # React contexts
+│   ├── pages/         # Main pages
+│   └── config/        # Configuration
+├── backend/
+│   ├── controllers/   # Business logic
+│   ├── models/       # MongoDB models
+│   ├── routes/       # API routes
+│   └── middleware/   # Middleware
+└── public/          # Static resources
 ```
 
-## API Endpoints
+## Author
 
-### Authentication
-- POST `/api/auth/register` - Register new user
-- POST `/api/auth/login` - User login
-
-### Products
-- GET `/api/products` - Get all products
-- GET `/api/products/:id` - Get single product
-
-### Orders
-- POST `/api/orders/create` - Create new order
-- GET `/api/orders/user/orders` - Get user's orders
-- GET `/api/orders/:id` - Get single order
-
-## Contributing
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- Hoang Thien
+- Email: hoangthien@gmail.com
 
 ## License
-This project is licensed under the MIT License.
+
+MIT License

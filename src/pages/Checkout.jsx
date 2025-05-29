@@ -50,8 +50,28 @@ const Checkout = ({ cart, onClearCart }) => {
   });
 
   // Tính tổng tiền
-  const subtotal = cart.reduce((sum, item) => sum + (item.productId.price * item.quantity), 0);
-  const shipping = 50000; // Phí vận chuyển cố định
+  const getItemPrice = (item) => {
+    if (!item?.product) {
+      return 0;
+    }
+    const product = item.product;
+    
+    // First try to get salePrice, if not available use originalPrice, then price
+    if (typeof product.salePrice === 'number') {
+      return product.salePrice;
+    } else if (typeof product.originalPrice === 'number') {
+      return product.originalPrice;
+    } else if (typeof product.price === 'number') {
+      return product.price;
+    }
+    return 0;
+  };
+
+  const subtotal = cart.reduce((sum, item) => {
+    const price = getItemPrice(item);
+    return sum + (price * (item.quantity || 1));
+  }, 0);
+  const shipping = cart.length > 0 ? 50000 : 0; // Phí vận chuyển cố định
   const total = subtotal + shipping;
 
   const handleChange = (e) => {
@@ -76,11 +96,11 @@ const Checkout = ({ cart, onClearCart }) => {
       // Gọi API tạo đơn hàng
       const response = await axios.post('/api/orders', {
         items: cart.map(item => ({
-          productId: item.productId._id,
-          name: item.productId.name,
-          price: item.productId.price,
+          productId: item.product._id,
+          name: item.product.name,
+          price: getItemPrice(item),
           quantity: item.quantity,
-          image: item.productId.image
+          image: item.product.image
         })),
         shippingInfo: {
           fullName: formData.fullName,
@@ -91,7 +111,7 @@ const Checkout = ({ cart, onClearCart }) => {
           district: formData.district,
           ward: formData.ward
         },
-        total: subtotal + shipping,
+        total: total,
         paymentMethod: formData.paymentMethod,
         note: formData.note
       });
@@ -288,13 +308,13 @@ const Checkout = ({ cart, onClearCart }) => {
               <h3 className="card-title mb-4">Đơn hàng của bạn</h3>
 
               {cart.map((item) => (
-                <div key={item.productId._id} className="d-flex justify-content-between align-items-center mb-3">
+                <div key={item.product._id} className="d-flex justify-content-between align-items-center mb-3">
                   <div>
-                    <h6 className="mb-0">{item.productId.name}</h6>
+                    <h6 className="mb-0">{item.product.name}</h6>
                     <small className="text-muted">Số lượng: {item.quantity}</small>
                   </div>
                   <div className="text-end">
-                    <div>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.productId.price * item.quantity)}</div>
+                    <div>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(getItemPrice(item) * item.quantity)}</div>
                   </div>
                 </div>
               ))}

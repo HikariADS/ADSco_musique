@@ -1,5 +1,9 @@
 // backend/server.js
 require('dotenv').config();
+
+// Add this line to check environment variables
+console.log('MongoDB URI:', process.env.MONGODB_URI);
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -23,7 +27,7 @@ app.use(express.static('public'));
 app.use('/avatars', express.static(path.join(__dirname, '../public/avatars')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/adsco', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })

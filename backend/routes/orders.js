@@ -40,13 +40,17 @@ router.post('/', auth, async (req, res) => {
     // Create new order
     const order = new Order({
       userId: req.user._id,
-      items: items.map(item => ({
-        productId: item.productId,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image
-      })),
+      items: items.map(item => {
+        // Get the correct price from the product
+        const price = item.salePrice || item.originalPrice || item.price || 0;
+        return {
+          productId: item.productId,
+          name: item.name,
+          price: price,
+          quantity: item.quantity,
+          image: item.image
+        };
+      }),
       shippingInfo: {
         fullName: shippingInfo.fullName.trim(),
         email: shippingInfo.email.trim().toLowerCase(),
@@ -314,6 +318,54 @@ router.get('/', [auth, isAdmin], async (req, res) => {
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Middleware kiểm tra quyền admin
+const isAdminMiddleware = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: 'Không có quyền truy cập' });
+  }
+  next();
+};
+
+// [ADMIN] Lấy tất cả đơn hàng
+router.get('/all', auth, isAdminMiddleware, async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .populate('user', 'name email');
+    res.json(orders);
+  } catch (err) {
+    console.error('Error getting all orders:', err);
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
+  }
+});
+
+// [ADMIN] Cập nhật trạng thái đơn hàng
+router.patch('/:orderId/status', auth, isAdminMiddleware, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+    }
+
+    // Kiểm tra trạng thái hợp lệ
+    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.json(order);
+  } catch (err) {
+    console.error('Error updating order status:', err);
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
   }
 });
 

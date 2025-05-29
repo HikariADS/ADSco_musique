@@ -1,11 +1,21 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../assets/logo.png';
 import defaultAvatar from '../assets/default-avatar.png';
 
 function Navbar({ user, onLogout, cartCount }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchTerm('');
+    }
+  };
 
   return (
     <>
@@ -34,8 +44,14 @@ function Navbar({ user, onLogout, cartCount }) {
           </Link>
 
           {/* Search bar */}
-          <form className="navbar-search mx-3 flex-grow-1 d-none d-lg-block">
-            <input className="form-control" type="search" placeholder="Tìm kiếm sản phẩm..." />
+          <form className="navbar-search mx-3 flex-grow-1 d-none d-lg-block" onSubmit={handleSearch}>
+            <input 
+              className="form-control" 
+              type="search" 
+              placeholder="Tìm kiếm sản phẩm..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </form>
 
           {/* Icon */}

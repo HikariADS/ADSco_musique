@@ -20,11 +20,11 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import BlogBlock from '../components/BlogBlock';
 import SpecialsBlock from '../components/SpecialsBlock';
+import FeaturedProducts from './FeaturedProducts';
 
-function HomePage() {
+function HomePage({ handleAddToCart }) {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const heroBanners = [
     {
@@ -53,52 +53,6 @@ function HomePage() {
     arrows: true,
     autoplay: true,
     autoplaySpeed: 4000,
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/products');
-      if (!response.ok) {
-        throw new Error('Lỗi khi tải danh sách sản phẩm');
-      }
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error('Error:', error);
-      // Fallback data when API is not available
-      setProducts([
-        {
-          id: 1,
-          name: 'Fender Player Stratocaster',
-          price: 15990000,
-          imageUrl: guitar1
-        },
-        {
-          id: 2,
-          name: 'Yamaha P-125 Digital Piano',
-          price: 19990000,
-          imageUrl: piano1
-        },
-        {
-          id: 3,
-          name: 'Roland TD-17KVX V-Drums',
-          price: 45990000,
-          imageUrl: drum1
-        },
-        {
-          id: 4,
-          name: 'Shure SM7B Microphone',
-          price: 8990000,
-          imageUrl: toy1
-        }
-      ]);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const pianoImages = [piano1, piano2, piano3, piano4, piano5];
@@ -141,10 +95,6 @@ function HomePage() {
     navigate(`/category/${slug}`);
   };
 
-  const handleProductClick = (productId) => {
-    navigate(`/products/${productId}`);
-  };
-
   return (
     <div>
       {/* 1. Hero Section - Slider */}
@@ -154,7 +104,7 @@ function HomePage() {
             <div className="col-md-6 mb-4 mb-md-0">
               <h1 className="display-4 mb-4">Khám Phá Thế Giới Âm Nhạc</h1>
               <p className="lead mb-4">Tìm kiếm nhạc cụ và thiết bị âm thanh chất lượng cao từ các thương hiệu hàng đầu thế giới.</p>
-              <button className="btn btn-primary btn-lg" onClick={() => navigate('/products')}>Mua Sắm Ngay</button>
+              <Link to="/products" className="btn btn-primary btn-lg">Mua Sắm Ngay</Link>
             </div>
             <div className="col-md-6">
               <Slider {...sliderSettings} className="hero-slider">
@@ -198,38 +148,7 @@ function HomePage() {
       </section>
 
       {/* 3. Featured Products */}
-      <section className="featured-products-block py-5">
-        <div className="container">
-          <h2 className="section-title text-center mb-5">Sản Phẩm Nổi Bật</h2>
-          <div className="row gx-4 gy-4">
-            {!loading && products.map(product => (
-              <div key={product.id} className="col-12 col-sm-6 col-md-3">
-                <div 
-                  className="product-card w-100"
-                  onClick={() => handleProductClick(product.id)}
-                  style={{ cursor: 'pointer', position: 'relative', zIndex: 10 }}
-                >
-                  <div className="product-image">
-                    <img 
-                      src={product.imageUrl || placeholder} 
-                      alt={product.name} 
-                      className="img-fluid"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = placeholder;
-                      }}
-                    />
-                  </div>
-                  <div className="product-info">
-                    <h3>{product.name}</h3>
-                    <p className="price">{product.price?.toLocaleString('vi-VN')}đ</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturedProducts handleAddToCart={handleAddToCart} />
 
       {/* 4. Specials/Hot Deals */}
       <SpecialsBlock />
