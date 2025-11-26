@@ -132,8 +132,8 @@ ADSco_musique/
 
 ## Author
 
-- Hoang Thien
-- Email: hoangthien@gmail.com
+- Hoang Thien Quang
+- Email: bebiumcc123@gmail.com
 
 ## License
 
